@@ -77,12 +77,12 @@ class GitHubClient(Client):
 
     async def issues_and_prs(self) -> ([(str, str, str, str, str, str)], [(str, str, str, str, str, str)]):
         all = await self._get_issues()
-        issues = [i for i in all if re.match(r"^https://(api\.)?github.com/(\w+/){2,3}issues/\d+$", i.get("url"))]
-        prs = [i for i in all if re.match(r"^https://(api\.)?github.com/(\w+/){2,3}pull/\d+$", i.get("url"))]
+        issues = [i for i in all if re.match(r"^https://(api\.)?github.com/(\w+/){2,3}issues/\d+$", i.get("html_url"))]
+        prs = [i for i in all if re.match(r"^https://(api\.)?github.com/(\w+/){2,3}pull/\d+$", i.get("html_url"))]
         issues = [(
             i.get("title"),
             i.get("body"),
-            i.get("url"),
+            i.get("html_url"),
             i.get("user", {}).get("login"),
             i.get("created_at"),
             i.get("updated_at")
@@ -90,7 +90,7 @@ class GitHubClient(Client):
         prs = [(
             i.get("title"),
             i.get("body"),
-            i.get("url"),
+            i.get("html_url"),
             i.get("user", {}).get("login"),
             i.get("created_at"),
             i.get("updated_at")
@@ -313,8 +313,8 @@ async def main():
         clients = await config.create_all_clients(session)
 
         print(f"# Initialized {len(clients)} clients")
-        print(f"## Now is: {datetime.now().isoformat()}")
-        print(f"## Clients:")
+        print(f"Time: {datetime.now().isoformat()}")
+        print(f"Clients:")
         for section_name, client in clients.items():
             print(f"- {section_name}")
         print()
@@ -323,7 +323,7 @@ async def main():
             # Use the name field from config, fallback to section name
             display_name = config.config[section_name].get("name", section_name)
             # we want some pseudo-markdown here
-            print(f"## {display_name}")
+            print(f"# {display_name}")
             print()
 
             if isinstance(client, GitHubClient):
@@ -332,29 +332,46 @@ async def main():
                 body_limit = config.get_setting("body_limit", section_name, 100)
 
                 for title, body, url, user, created, updated in issues:
-                    print(f"Issue: {title}")
-                    print(f"Author: {user}")
-                    print(f"URL: {url}")
-                    print(f"Created: {days_ago_from_iso(created)}")
-                    print(f"Updated: {days_ago_from_iso(updated)}")
-                    print()
-                    print(f"Body: {body[:body_limit] if body else 'No body'}")
+                    n = re.search(r"\d+$", url).group(0)
+                    if body:
+                        if body_limit > 0:
+                            body = body[:body_limit]
+                        else:
+                            body = body
+                    else:
+                        body = "\n```\nNo body\n```\n"
+
+                    print(f"## ISSUE: {n} - {title}\n")
+                    print(f"- Author:\t`{user}`")
+                    print(f"- URL:\t{url}")
+                    print(f"- Created:\t{days_ago_from_iso(created)}")
+                    print(f"- Updated:\t{days_ago_from_iso(updated)}")
+                    print(f"{body}")
                     print("\n---\n")
 
                 for title, body, url, user, created, updated in prs:
-                    print(f"PR: {title}")
-                    print(f"Author: {user}")
-                    print(f"URL: {url}")
-                    print(f"Created: {days_ago_from_iso(created)}")
-                    print(f"Updated: {days_ago_from_iso(updated)}")
-                    print()
-                    print(f"Body: {body[:body_limit] if body else 'No body'}")
+                    if body:
+                        if body_limit > 0:
+                            body = body[:body_limit]
+                        else:
+                            body = body
+                    else:
+                        body = "\n```\nNo body\n```"
+                    n = re.search(r"\d+$", url).group(0)
+                    print(f"## PR: {n} - {title}\n")
+                    print(f"- Author:\t`{user}`")
+                    print(f"- URL:\t{url}")
+                    print(f"- Created:\t{days_ago_from_iso(created)}")
+                    print(f"- Updated:\t{days_ago_from_iso(updated)}")
+                    print(f"{body}")
                     print("\n---\n")
 
             elif isinstance(client, MatrixClient):
                 # await client.login()
                 messages = await client.get_messages()
 
+
+                print("```log")
                 for msg in messages:
                     # Format timestamp
                     timestamp = datetime.fromtimestamp(msg["timestamp"] / 1000)
@@ -370,7 +387,7 @@ async def main():
                     else:
                         print(f"{hash_prefix}: {msg['body']}")
 
-                print("\n---\n")
+                print("```")
 
 
 if __name__ == "__main__":
