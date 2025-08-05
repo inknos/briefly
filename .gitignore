@@ -9,6 +9,13 @@ wheels/
 # Virtual environments
 .venv
 
+# uv
+uv.lock
+.python-version
+
 # configs and secrets
 clients.toml
 credentials.json
+
+# claude stuff
+.claude

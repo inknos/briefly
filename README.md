@@ -88,13 +88,14 @@ The program outputs information in a pseudo-markdown format. The display now inc
 ## Now is: 2025-08-05T13:31:27.498599
 ## Clients:
 - podman_issues
-- testing_room_with_unencrypted_stuff
+- podman_prs
+- matrix_testing_room
 
 ## Display Name
 
 Issue: Issue title here
 Author: github_username
-URL: https://api.github.com/repos/owner/repo/issues/12345
+URL: https://api.github.com/repos/owner/repo/issues/...
 Created: 0 days ago: 2025-08-05
 Updated: 0 days ago: 2025-08-05
 
@@ -102,9 +103,13 @@ Body: Full issue body text...
 
 ---
 
-Issue: Another issue title
+...
+
+---
+
+PR: A PR title here
 Author: another_user
-URL: https://api.github.com/repos/owner/repo/issues/12344
+URL: https://api.github.com/repos/owner/repo/pull/...
 Created: 1 days ago: 2025-08-04
 Updated: 0 days ago: 2025-08-05
 
@@ -112,9 +117,19 @@ Body: Another issue body...
 
 ---
 
-From: @matrix_user:example.org
-Message: Matrix message content
-Time: 1234567890
+...
+
+---
+
+## Testing Room
+
+[10:26:24] (PTjHTIkO) <@user1:matrix.org>: this is a public room
+[10:26:33] (UTsdvvdd) <@user2:matrix.org>: all messages are unencrypted
+[10:26:44] (rYc3B3qa) <@user1:matrix.org> (Re: UTsdvvdd): we can interact and reply
+[10:26:51] (sgwNCe5k) <@user1:matrix.org> (Th: rYc3B3qa) and create a thread
+[11:05:35] (FrnbwA-f) <@user1:matrix.org>: isolated message
+[11:05:50] (HPnT15Sq) <@user2:matrix.org> (Th: rYc3B3qa) this is part of the thread btw
+[11:06:05] (odyi3pjB) <@user2:matrix.org> (Th: rYc3B3qa) and there is a reply within the thread
 
 ---
 ```
