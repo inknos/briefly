@@ -339,13 +339,13 @@ async def main():
                         else:
                             body = body
                     else:
-                        body = "\n```\nNo body\n```\n"
+                        body = "\n\n```\nNo body\n```\n"
 
                     print(f"## ISSUE: {n} - {title}\n")
                     print(f"- Author:\t`{user}`")
                     print(f"- URL:\t{url}")
-                    print(f"- Created:\t{days_ago_from_iso(created)}")
-                    print(f"- Updated:\t{days_ago_from_iso(updated)}")
+                    print(f"- Created:\t`{days_ago_from_iso(created)}`")
+                    print(f"- Updated:\t`{days_ago_from_iso(updated)}`")
                     print(f"{body}")
                     print("\n---\n")
 
@@ -361,8 +361,8 @@ async def main():
                     print(f"## PR: {n} - {title}\n")
                     print(f"- Author:\t`{user}`")
                     print(f"- URL:\t{url}")
-                    print(f"- Created:\t{days_ago_from_iso(created)}")
-                    print(f"- Updated:\t{days_ago_from_iso(updated)}")
+                    print(f"- Created:\t`{days_ago_from_iso(created)}`")
+                    print(f"- Updated:\t`{days_ago_from_iso(updated)}`")
                     print(f"{body}")
                     print("\n---\n")
 
